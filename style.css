@@ -1,0 +1,13 @@
+body {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    margin-top: 50px;
+}
+
+#snap {
+    margin: 20px;
+    padding: 10px 20px;
+    font-size: 16px;
+}
