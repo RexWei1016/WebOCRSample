@@ -4,8 +4,12 @@ document.addEventListener('DOMContentLoaded', function () {
     var context = canvas.getContext('2d');
     var snapButton = document.getElementById('snap');
 
-    // 啟用網頁攝像頭
-    navigator.mediaDevices.getUserMedia({ video: true }).then(function(stream) {
+    // 嘗試選擇後置鏡頭
+    var constraints = {
+        video: { facingMode: "environment" }
+    };
+
+    navigator.mediaDevices.getUserMedia(constraints).then(function(stream) {
         video.srcObject = stream;
     }).catch(function(error) {
         console.error("無法訪問攝像頭，錯誤：", error);
