@@ -7,6 +7,8 @@ document.addEventListener('DOMContentLoaded', function () {
     // 啟用網頁攝像頭
     navigator.mediaDevices.getUserMedia({ video: true }).then(function(stream) {
         video.srcObject = stream;
+    }).catch(function(error) {
+        console.error("無法訪問攝像頭，錯誤：", error);
     });
 
     // 拍照並進行OCR識別

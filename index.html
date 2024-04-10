@@ -2,11 +2,12 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>車牌OCR辨識</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <video id="video" width="640" height="480" autoplay></video>
+    <video id="video" width="640" height="480" autoplay playsinline muted></video>
     <button id="snap">拍照辨識</button>
     <canvas id="canvas" width="640" height="480" style="display:none;"></canvas>
     <p id="ocrResult">辨識結果將顯示在這裡</p>
