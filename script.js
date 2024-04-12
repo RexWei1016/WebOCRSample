@@ -17,26 +17,34 @@ document.addEventListener('DOMContentLoaded', function () {
         console.error("無法訪問攝像頭，錯誤：", error);
     });
 
-    snapButton.addEventListener('click', function() {
-        context.clearRect(0, 0, canvas.width, canvas.height);
-        context.drawImage(video, 0, 0, 640, 480);
-        setTimeout(function() {
-            let imageData = context.getImageData(0, 0, canvas.width, canvas.height); // 取得整個畫布的影像數據
-            processImage(imageData);
-            var imgData = canvas.toDataURL('image/png'); // 將整個處理過的畫布轉換為DataURL
-            Tesseract.recognize(
-                imgData,
-                'eng',
-                {
-                    logger: m => console.log(m)
-                }
-            ).then(function({ data: { text } }) {
-                let regex = new RegExp(plateFormat.value);  // 使用選定的車牌規則
-                let formattedText = text.match(regex);
-                resultDisplay.innerText = formattedText ? formattedText[0] : "未識別到有效車牌";
-            });
-        }, 100); // 確保繪製完成後再進行OCR
-    });
+	snapButton.addEventListener('click', function() {
+		context.clearRect(0, 0, canvas.width, canvas.height);
+		// 根據實際視頻大小動態計算擷取區域的位置和大小
+		var captureWidth = video.videoWidth * 0.5; // 擷取中央50%的寬度
+		var captureHeight = video.videoHeight * 0.5; // 擷取中央50%的高度
+		var startX = (video.videoWidth - captureWidth) / 2;
+		var startY = (video.videoHeight - captureHeight) / 2;
+		
+		// 繪製視頻中央區域到canvas
+		context.drawImage(video, startX, startY, captureWidth, captureHeight, 0, 0, canvas.width, canvas.height);
+		
+		setTimeout(function() {
+			let imageData = context.getImageData(0, 0, canvas.width, canvas.height); // 取得整個畫布的影像數據
+			processImage(imageData);
+			var imgData = canvas.toDataURL('image/png'); // 將整個處理過的畫布轉換為DataURL
+			Tesseract.recognize(
+				imgData,
+				'eng',
+				{
+					logger: m => console.log(m)
+				}
+			).then(function({ data: { text } }) {
+				let regex = new RegExp(plateFormat.value);  // 使用選定的車牌規則
+				let formattedText = text.match(regex);
+				resultDisplay.innerText = formattedText ? formattedText[0] : "未識別到有效車牌";
+			});
+		}, 100); // 確保繪製完成後再進行OCR
+	});
 
     clearButton.addEventListener('click', function() {
         context.clearRect(0, 0, canvas.width, canvas.height);  // 清除畫布

@@ -12,8 +12,8 @@
         <div class="row justify-content-center">
             <div class="col-md-8">
                 <div id="container" class="position-relative">
-                    <video id="video" width="640" height="480" autoplay playsinline muted></video>
-                    <canvas id="canvas" width="640" height="480"></canvas>
+                    <video id="video" autoplay playsinline muted></video>
+                    <canvas id="canvas"></canvas>
                 </div>
                 <div class="text-center">
 					<select id="plateFormat" class="custom-select my-3">
@@ -26,11 +26,9 @@
 					<button id="clear" class="btn btn-primary mt-3">重新識別</button>
 					<p id="ocrResult" class="mt-3">辨識結果將顯示在這裡</p>
                 </div>
-
             </div>
         </div>
     </div>
-
     <script src="https://cdn.jsdelivr.net/npm/tesseract.js@2"></script>
     <script src="script.js"></script>
 </body>

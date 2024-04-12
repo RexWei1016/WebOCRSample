@@ -1,30 +1,23 @@
 #container {
     position: relative;
-    width: 480px; /* 適合桌面的寬度 */
-    height: 240px; /* 適合桌面的高度 */
+    width: 100%; /* 讓容器寬度與螢幕寬度一致 */
+    padding-top: 75%; /* 設定為寬高比 4:3 的比例，例如640x480 */
     overflow: hidden;
     margin: auto;
 }
 
 video, canvas {
     position: absolute;
-    top: 50%;
-    left: 50%;
-    width: 640px;
-    height: 480px;
-    transform: translate(-50%, -50%);
+    top: 0;
+    left: 0;
+    width: 100%; /* 讓video和canvas填滿容器 */
+    height: 100%;
+    object-fit: cover; /* 確保不會因為容器比例而變形 */
 }
 
 /* 響應式設計：針對小於 768px 寬的設備調整設定 */
 @media (max-width: 768px) {
     #container {
-        width: 100%; /* 在小屏幕上容器寬度為 100% */
-        height: auto; /* 高度自動調整保持比例 */
-        padding-top: 37.5%; /* 8:3 比例 */
-    }
-
-    video, canvas {
-        width: 853px; /* 調整視頻尺寸以填滿容器 */
-        height: 480px;
+        padding-top: 56.25%; /* 調整比例為16:9的場景 */
     }
 }
