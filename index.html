@@ -16,10 +16,16 @@
                     <canvas id="canvas" width="640" height="480"></canvas>
                 </div>
                 <div class="text-center">
-                    <button id="snap" class="btn btn-primary mt-3">辨識</button>
-                    <button id="clear" class="btn btn-primary mt-3">重新識別</button>
-                    <p id="ocrResult" class="mt-3">辨識結果將顯示在這裡</p>
+					<select id="plateFormat" class="custom-select my-3">
+						<option value="[A-Z]{2}-\d{4}">格式 A (ex: AB-1234)</option>
+						<option value="\d{3}-[A-Z]{3}">格式 B (ex: 123-ABC)</option>
+						<option value="[A-Z]{3}-\d{3}">格式 C (ex: ABC-123)</option>
+					</select>
+					<button id="snap" class="btn btn-primary mt-3">辨識</button>
+					<button id="clear" class="btn btn-primary mt-3">重新識別</button>
+					<p id="ocrResult" class="mt-3">辨識結果將顯示在這裡</p>
                 </div>
+
             </div>
         </div>
     </div>

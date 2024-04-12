@@ -3,8 +3,9 @@ document.addEventListener('DOMContentLoaded', function () {
     var canvas = document.getElementById('canvas');
     var context = canvas.getContext('2d');
     var snapButton = document.getElementById('snap');
-    var clearButton = document.getElementById('clear'); // 新增一個清除按鈕
+    var clearButton = document.getElementById('clear');
     var resultDisplay = document.getElementById('ocrResult');
+    var plateFormat = document.getElementById('plateFormat');  // 獲取車牌格式選擇器
 
     var constraints = {
         video: { facingMode: "environment" }
@@ -19,12 +20,10 @@ document.addEventListener('DOMContentLoaded', function () {
     snapButton.addEventListener('click', function() {
         context.clearRect(0, 0, canvas.width, canvas.height);
         context.drawImage(video, 0, 0, 640, 480);
-        //drawRecognitionArea();
         setTimeout(function() {
-            let imageData = context.getImageData(200, 180, 240, 120);
+            let imageData = context.getImageData(0, 0, canvas.width, canvas.height); // 取得整個畫布的影像數據
             processImage(imageData);
-
-            var imgData = canvas.toDataURL('image/png'); // 將處理過的圖像轉換為DataURL
+            var imgData = canvas.toDataURL('image/png'); // 將整個處理過的畫布轉換為DataURL
             Tesseract.recognize(
                 imgData,
                 'eng',
@@ -32,18 +31,17 @@ document.addEventListener('DOMContentLoaded', function () {
                     logger: m => console.log(m)
                 }
             ).then(function({ data: { text } }) {
-                let formattedText = text.match(/[A-Z]{2}-\d{4}/); // 正規表達式匹配英文兩碼，數字四碼
+                let regex = new RegExp(plateFormat.value);  // 使用選定的車牌規則
+                let formattedText = text.match(regex);
                 resultDisplay.innerText = formattedText ? formattedText[0] : "未識別到有效車牌";
             });
         }, 100); // 確保繪製完成後再進行OCR
     });
 
     clearButton.addEventListener('click', function() {
-        context.clearRect(0, 0, canvas.width, canvas.height); // 清除畫布
-        //context.drawImage(video, 0, 0, 640, 480); // 重新繪製視頻流到畫布上
+        context.clearRect(0, 0, canvas.width, canvas.height);  // 清除畫布
+        resultDisplay.innerText = "";  // 清除辨識結果顯示
     });
-
-
 
     function processImage(imageData) {
         let data = imageData.data;
@@ -51,10 +49,9 @@ document.addEventListener('DOMContentLoaded', function () {
             // 灰階處理
             let avg = (data[i] + data[i + 1] + data[i + 2]) / 3;
             data[i] = data[i + 1] = data[i + 2] = avg;
-
             // 二值化
             data[i] = data[i + 1] = data[i + 2] = (avg > 128) ? 255 : 0;
         }
-        context.putImageData(imageData, 200, 180);
+        context.putImageData(imageData, 0, 0); // 將處理後的影像數據放回畫布的原位置
     }
 });
