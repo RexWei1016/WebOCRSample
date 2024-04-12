@@ -1,13 +1,16 @@
-body {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    margin-top: 50px;
+#container {
+    position: relative;
+    width: 480px; /* 更窄的寬度以適合車牌 */
+    height: 240px; /* 高度調整以形成長方形 */
+    overflow: hidden;
+    margin: auto; /* 確保容器在其父元素中居中 */
 }
 
-#snap {
-    margin: 20px;
-    padding: 10px 20px;
-    font-size: 16px;
+video, canvas {
+    position: absolute;
+    top: 50%; /* 將視頻和 Canvas 垂直居中 */
+    left: 50%; /* 將視頻和 Canvas 水平居中 */
+    width: 640px; /* 原始寬度 */
+    height: 480px; /* 原始高度 */
+    transform: translate(-50%, -50%); /* 使用 transform 居中視頻和 Canvas */
 }

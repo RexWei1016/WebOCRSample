@@ -16,29 +16,33 @@ document.addEventListener('DOMContentLoaded', function () {
     });
 
     snapButton.addEventListener('click', function() {
+        context.clearRect(0, 0, canvas.width, canvas.height);
         context.drawImage(video, 0, 0, 640, 480);
         drawRecognitionArea();
-        let imageData = context.getImageData(200, 180, 240, 120);  // 只針對車牌區域進行OCR
-        processImage(imageData);
+        setTimeout(function() {
+            let imageData = context.getImageData(200, 180, 240, 120);
+            processImage(imageData);
 
-        var imgData = canvas.toDataURL('image/png');
-        Tesseract.recognize(
-            imgData,
-            'eng',
-            {
-                logger: m => console.log(m)
-            }
-        ).then(function({ data: { text } }) {
-            let formattedText = text.match(/[A-Z]{2}-\d{4}/); // 正規表達式匹配英文兩碼，數字四碼
-            resultDisplay.innerText = formattedText ? formattedText[0] : "未識別到有效車牌";
-        });
+            var imgData = canvas.toDataURL('image/png');
+            Tesseract.recognize(
+                imgData,
+                'eng',
+                {
+                    logger: m => console.log(m)
+                }
+            ).then(function({ data: { text } }) {
+                let formattedText = text.match(/[A-Z]{2}-\d{4}/); // 正規表達式匹配英文兩碼，數字四碼
+                resultDisplay.innerText = formattedText ? formattedText[0] : "未識別到有效車牌";
+            });
+        }, 100); // 確保繪製完成後再進行OCR
     });
 
-    function drawRecognitionArea() {
-        context.strokeStyle = 'green';
-        context.lineWidth = 6;
-        context.strokeRect(200, 180, 240, 120);  // 繪製綠色框框
-    }
+	function drawRecognitionArea() {
+		context.strokeStyle = 'green';
+		context.lineWidth = 6;
+		// 調整繪製區域以匹配新的長方形尺寸
+		context.strokeRect(160, 60, 160, 120); // 調整矩形的位置和尺寸以覆蓋中心的車牌區域
+	}
 
     // 圖像前處理函數
     function processImage(imageData) {
@@ -51,6 +55,6 @@ document.addEventListener('DOMContentLoaded', function () {
             // 二值化
             data[i] = data[i + 1] = data[i + 2] = (avg > 128) ? 255 : 0;
         }
-        context.putImageData(imageData, 200, 180);  // 將處理後的圖像數據放回車牌區域
+        context.putImageData(imageData, 200, 180);
     }
 });
