@@ -3,6 +3,7 @@ document.addEventListener('DOMContentLoaded', function () {
     var canvas = document.getElementById('canvas');
     var context = canvas.getContext('2d');
     var snapButton = document.getElementById('snap');
+    var clearButton = document.getElementById('clear'); // 新增一個清除按鈕
     var resultDisplay = document.getElementById('ocrResult');
 
     var constraints = {
@@ -18,12 +19,12 @@ document.addEventListener('DOMContentLoaded', function () {
     snapButton.addEventListener('click', function() {
         context.clearRect(0, 0, canvas.width, canvas.height);
         context.drawImage(video, 0, 0, 640, 480);
-        drawRecognitionArea();
+        //drawRecognitionArea();
         setTimeout(function() {
             let imageData = context.getImageData(200, 180, 240, 120);
             processImage(imageData);
 
-            var imgData = canvas.toDataURL('image/png');
+            var imgData = canvas.toDataURL('image/png'); // 將處理過的圖像轉換為DataURL
             Tesseract.recognize(
                 imgData,
                 'eng',
@@ -37,14 +38,13 @@ document.addEventListener('DOMContentLoaded', function () {
         }, 100); // 確保繪製完成後再進行OCR
     });
 
-	function drawRecognitionArea() {
-		context.strokeStyle = 'green';
-		context.lineWidth = 6;
-		// 調整繪製區域以匹配新的長方形尺寸
-		context.strokeRect(160, 60, 160, 120); // 調整矩形的位置和尺寸以覆蓋中心的車牌區域
-	}
+    clearButton.addEventListener('click', function() {
+        context.clearRect(0, 0, canvas.width, canvas.height); // 清除畫布
+        //context.drawImage(video, 0, 0, 640, 480); // 重新繪製視頻流到畫布上
+    });
 
-    // 圖像前處理函數
+
+
     function processImage(imageData) {
         let data = imageData.data;
         for (let i = 0; i < data.length; i += 4) {
