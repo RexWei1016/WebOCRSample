@@ -3,6 +3,7 @@ document.addEventListener('DOMContentLoaded', function () {
     var canvas = document.getElementById('canvas');
     var context = canvas.getContext('2d');
     var snapButton = document.getElementById('snap');
+    var resultDisplay = document.getElementById('ocrResult');
 
     var constraints = {
         video: { facingMode: "environment" }
@@ -16,7 +17,8 @@ document.addEventListener('DOMContentLoaded', function () {
 
     snapButton.addEventListener('click', function() {
         context.drawImage(video, 0, 0, 640, 480);
-        let imageData = context.getImageData(0, 0, 640, 480);
+        drawRecognitionArea();
+        let imageData = context.getImageData(200, 180, 240, 120);  // 只針對車牌區域進行OCR
         processImage(imageData);
 
         var imgData = canvas.toDataURL('image/png');
@@ -27,9 +29,16 @@ document.addEventListener('DOMContentLoaded', function () {
                 logger: m => console.log(m)
             }
         ).then(function({ data: { text } }) {
-            document.getElementById('ocrResult').innerText = text;
+            let formattedText = text.match(/[A-Z]{2}-\d{4}/); // 正規表達式匹配英文兩碼，數字四碼
+            resultDisplay.innerText = formattedText ? formattedText[0] : "未識別到有效車牌";
         });
     });
+
+    function drawRecognitionArea() {
+        context.strokeStyle = 'green';
+        context.lineWidth = 6;
+        context.strokeRect(200, 180, 240, 120);  // 繪製綠色框框
+    }
 
     // 圖像前處理函數
     function processImage(imageData) {
@@ -42,6 +51,6 @@ document.addEventListener('DOMContentLoaded', function () {
             // 二值化
             data[i] = data[i + 1] = data[i + 2] = (avg > 128) ? 255 : 0;
         }
-        context.putImageData(imageData, 0, 0);
+        context.putImageData(imageData, 200, 180);  // 將處理後的圖像數據放回車牌區域
     }
 });
